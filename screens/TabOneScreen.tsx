@@ -15,26 +15,38 @@ export default function TabOneScreen({
   navigation,
 }: RootTabScreenProps<"TabOne">) {
   const [token, setToken] = useState<string>("")
-  const handlePress = () => {
-    alert("pressed")
-    auth0.auth
-      .createUser({
+  const handleCreate = async () => {
+    try {
+      const res = await auth0.auth.createUser({
         email: "favm72@gmail.com",
         password: "Aabc1234",
         connection: "Username-Password-Authentication",
         metadata: {},
       })
-      //.authorize({ scope: "openid profile email" })
-      .then(res => {
-        alert("success")
-        setToken(res.Id)
+      console.log(res)
+    } catch (error) {
+      console.log(error)
+    }
+    //.authorize({ scope: "openid profile email" })
+  }
+
+  const handleLogin = async () => {
+    try {
+      const res = await auth0.webAuth.authorize({
+        scope: "openid profile email",
       })
-      .catch(error => console.log(error))
+      alert("Login Success")
+      setToken(res.accessToken)
+    } catch (error) {
+      console.log(error)
+      alert("Login Failed")
+    }
   }
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Tab One</Text>
-      <Button title="Login" onPress={handlePress}></Button>
+      <Button title="Register" onPress={handleCreate}></Button>
+      <Button title="Login" onPress={handleLogin}></Button>
       <Text style={styles.title}>{token}</Text>
       <View
         style={styles.separator}
